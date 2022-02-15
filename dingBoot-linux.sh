@@ -5,7 +5,6 @@ appKey=$4
 appSecret=$5
 agentId=$6
 corpId=$7
-domain=$8
 APP_NAME=${appName}.jar
 usage() {
     echo "Usage:sh $0 [start|stop|restart|status]"
@@ -37,11 +36,11 @@ start_pierced() {
     git clone https://github.com/open-dingtalk/pierced.git
     cd pierced/linux
     chmod 777 ./ding
-    ./ding -config=./ding.cfg -subdomain=${domain} $port
+    ./ding -config=./ding.cfg -subdomain=${appKey} $port
   else
     cd pierced/linux
     chmod 777 ./ding
-    ./ding -config=./ding.cfg -subdomain=${domain} $port
+    ./ding -config=./ding.cfg -subdomain=${appKey} $port
   fi
 
 }
@@ -77,7 +76,7 @@ start() {
    maven_build_package
    echo ">>>> extract_jar"
    extract_jar
-   java -jar ${APP_NAME} --port=${port} --appKey=${appKey} --appSecret=${appSecret} --agentId=${agentId} --corpId=${corpId} --domain=${domain} >> Log.log 2>&1 &
+   java -jar ${APP_NAME} --port=${port} --appKey=${appKey} --appSecret=${appSecret} --agentId=${agentId} --corpId=${corpId} --domain=${appKey} >> Log.log 2>&1 &
    echo ">>>> start_pierced"
    start_pierced
 }

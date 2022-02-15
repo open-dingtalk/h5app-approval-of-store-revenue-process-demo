@@ -24,6 +24,11 @@ public class UrlConstant {
     public static final String REGISTER_CALL_BACK = "https://oapi.dingtalk.com/call_back/register_call_back";
 
     /**
+     * 获取回调地址
+     */
+    public static final String GET_CALL_BACK = "https://oapi.dingtalk.com/call_back/get_call_back";
+
+    /**
      * 获取审批实例详情
      */
     public static final String PROCESS_INSTANCE_GET = "https://oapi.dingtalk.com/topapi/processinstance/get";

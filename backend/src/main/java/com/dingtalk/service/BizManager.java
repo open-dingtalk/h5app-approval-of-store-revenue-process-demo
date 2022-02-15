@@ -5,8 +5,10 @@ import com.aliyun.dingboot.common.event.Callback;
 import com.aliyun.dingboot.common.token.ITokenManager;
 import com.dingtalk.api.DefaultDingTalkClient;
 import com.dingtalk.api.DingTalkClient;
+import com.dingtalk.api.request.OapiCallBackGetCallBackRequest;
 import com.dingtalk.api.request.OapiCallBackRegisterCallBackRequest;
 import com.dingtalk.api.request.OapiProcessSaveRequest;
+import com.dingtalk.api.response.OapiCallBackGetCallBackResponse;
 import com.dingtalk.api.response.OapiCallBackRegisterCallBackResponse;
 import com.dingtalk.api.response.OapiProcessSaveResponse;
 import com.dingtalk.config.AppConfig;
@@ -15,6 +17,7 @@ import com.dingtalk.constant.UrlConstant;
 import com.dingtalk.model.Model;
 import com.dingtalk.model.ProcessInstance;
 import com.taobao.api.ApiException;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -27,6 +30,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * 主业务service，编写你的代码
  */
+@Slf4j
 @Service
 public class BizManager {
     @Resource
@@ -176,8 +180,22 @@ public class BizManager {
         StringBuilder url = new StringBuilder();
         url.append("http://").append(appConfig.getDomain()).append(".vaiwan.com").append(Const.CALL_BACK_URL);
 
+        // 查询回调地址
+        DingTalkClient client = new DefaultDingTalkClient(UrlConstant.GET_CALL_BACK);
+        OapiCallBackGetCallBackRequest req = new OapiCallBackGetCallBackRequest();
+        req.setHttpMethod("GET");
+        OapiCallBackGetCallBackResponse rsp = client.execute(req, accessToken);
+        String registerUrl = rsp.getUrl();
+        if (StringUtils.hasText(registerUrl)) {
+            if (!registerUrl.equals(url.toString())) {
+                log.info("当前应用回调地址与服务接收回调地址不一致！将无法处理审批回调！请将服务接收回调地址修改为与应用注册回调地址一致！" +
+                        "当前应用注册回调地址为: " + registerUrl);
+            }
+            return;
+        }
+
         // 注册回调
-        DingTalkClient client = new DefaultDingTalkClient(UrlConstant.REGISTER_CALL_BACK);
+        client = new DefaultDingTalkClient(UrlConstant.REGISTER_CALL_BACK);
         OapiCallBackRegisterCallBackRequest setRequest = new OapiCallBackRegisterCallBackRequest();
         setRequest.setUrl(url.toString());
         setRequest.setAesKey(Const.AES_KEY);

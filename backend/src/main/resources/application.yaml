@@ -1,10 +1,11 @@
 server:
-  port: 8085
+  port: ${port}
   forward-headers-strategy: FRAMEWORK
 app:
-  app_key: dingjmmk3lqja3b5kncr
-  app_secret: d8wx5jx9qIukhjrgtmVhnFuQJeNanEuJbEbU_I73o0HpVkZ8pshGZrlHeeFfg1mt
-  corp_id: ding6f37ea1861c3ad36bc961a6cb783455b
-  agent_id: 1465317234
+  app_key: ${appKey}
+  app_secret: ${appSecret}
+  corp_id: ${corpId}
+  agent_id: ${agentId}
   # 域名, 请与内网穿透工具使用的域名一致。
-  domain: lisnnn334
+  domain: ${domain}
+
